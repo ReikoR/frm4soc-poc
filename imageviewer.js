@@ -230,6 +230,10 @@
                         left: imgLeft,
                         top: imgTop
                     })
+					
+					if (viewer.options.onChanged) {
+						viewer.options.onChanged();
+					}
                 }
             }).init();
 
@@ -527,10 +531,18 @@
 
             function zoom() {
                 step++;
-
+				
                 if (step < 20) {
                     self._zoomFrame = requestAnimationFrame(zoom);
-                }
+                } else if (step === 20) {
+					if (self.options.onZoomed) {
+						self.options.onZoomed();
+					}
+					
+					if (self.options.onChanged) {
+						self.options.onChanged();
+					}
+				}
 
                 var tickZoom = easeOutQuart(step, curPerc, perc - curPerc, 20);
 
@@ -568,6 +580,8 @@
 
                 //update zoom handle position
                 self.zoomHandle.css('left', ((tickZoom - 100) * self._zoomSliderLength) / (maxZoom - 100) + 'px');
+				
+				
             }
 
             zoom();
@@ -621,6 +635,10 @@
                 'max-width': 'none',
                 'max-height': 'none'
             });
+			
+			if (self.options.onChanged) {
+				self.options.onChanged();
+			}
 
             //set the snap Image dimension
             var snapWidth = imgWidth > imgHeight ? snapViewWidth : imgWidth * snapViewHeight / imgHeight,

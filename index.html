@@ -619,16 +619,57 @@ wpa2a.html_done=true;if(wpa2a.script_ready&&!wpa2a.done)wpa2a.init();wpa2a.scrip
     color: #437bd0;
     cursor: pointer;
 }
+
+.tap-area {
+	position: absolute;
+    height: 50px;
+    width: 50px;
+    /*background-color: magenta;*/
+    opacity: 0.3;
+    /*border: 3px solid red;*/
+    box-sizing: border-box;
+    border-radius: 50%;
+    cursor: pointer;
+	z-index: 100;
+}
 </style>
 
 <script>
-var im = ImageViewer('.wp-image-2275', {snapView: false});
+/*jQuery('.wp-image-2275').attr('src', 'to.svg');*/
 
-var moreInfo = jQuery('<span class="more-info">More info ...</span>')
+var tapArea = jQuery('<div class="tap-area"></div>');
+var x = 0.115;
+var y = 0.282;
+var w = 0.1;
+var h = 0.074;
 
-jQuery('#attachment_2275').find('.wp-caption-text').append(moreInfo);
+var im = ImageViewer('.wp-image-2275', {
+	snapView: false,
+	onChanged: function () {
+		/*console.log('onChanged');*/
+		
+		var currentImage = im.currentImg;
+		var position = currentImage.position();
+		var zoom = im.zoomValue / 100;
+		
+		var imageWidth = currentImage.width()
+		var imageHeight = currentImage.height()
+		
+		var width = w * imageWidth;
+		var height = h * imageHeight;
+		
+		tapArea.css({
+			left: (x * imageWidth + position.left - width / 2) + 'px',
+			top: (y * imageHeight + position.top - height / 2) + 'px',
+			height: height + 'px',
+			width: width + 'px'
+		});
+	}
+});
 
-moreInfo.on('click', function () {
+im.container.append(tapArea);
+
+tapArea.on('click', function () {
 	console.log('click');
 	jQuery.featherlight('<div>' + 
 	'<h1>test</h1>' + 
